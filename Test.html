@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .div{
+            width: 100px;
+            height: 100px;
+            background: darkred;
+        }
+        li{
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+    <script src="mquery.js"></script>
+    <script type="text/javascript">
+        $(function(){
+                alert($('li').attr("value"));
+        })
+    </script>
+</head>
+<body>
+<div class="div" id="div1"></div>
+<div class="div" id="div2"></div>
+<li></li>
+<li></li>
+<li></li>
+</body>
+</html>

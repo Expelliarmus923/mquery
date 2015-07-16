@@ -17,20 +17,29 @@
         li{
             width: 100px;
             height: 100px;
+            float:left;
+            margin-left: 1px;
         }
     </style>
     <script src="mquery.js"></script>
     <script type="text/javascript">
         $(function(){
-                alert($('li').attr("value"));
+              $('#ul').find("li").eq(2).css({width:"200px",height:"200px",background:"black"}).css("margin","10px");
         })
     </script>
 </head>
 <body>
 <div class="div" id="div1"></div>
 <div class="div" id="div2"></div>
-<li></li>
-<li></li>
-<li></li>
+<ul id="ul">
+    <span></span>
+    <span></span>
+    <span></span>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
 </body>
 </html>

@@ -61,21 +61,35 @@ mquery.prototype.css=function(attr,value){
             this.elements[i].style[attr]=value;
         }
     }else{
-        return this.elements[0].currentStyle ? this.elements[0].currentStyle[attr]   :
+        if(typeof attr=="string"){
+            return this.elements[0].currentStyle ? this.elements[0].currentStyle[attr]   :
             getComputedStyle(this.elements[0], false)[attr];
+        }else{
+            var json=attr;
+            for(var i=0;i<this.elements.length;i++){
+                var a;
+                for(a in json){
+                    this.elements[i].style [a]=json[a];
+                }
+            }
+
+        }
     }
+    return this;
 }
 mquery.prototype.click=function(fn){
     var i=0;
     for(i=0;i<this.elements.length;i++){
         EventUtil.addHandler(this.elements[i],'click',fn);
     }
+    return this;
 }
 mquery.prototype.hover=function(fn){
     var i=0;
     for(i=0;i<this.elements.length;i++){
         EventUtil.addHandler(this.elements[i],'mouseover',fn);
     }
+    return this;
 }
 mquery.prototype.toggle=function(){
     var i= 0,_arguments=arguments,_this=this;
@@ -88,22 +102,52 @@ mquery.prototype.toggle=function(){
         EventUtil.addHandler(this.elements[i],'click',handler);
         handler=null;
     }
+    return this;
 }
 mquery.prototype.show=function(){
     var i=0;
     for(i=0;i<this.elements.length;i++){
         this.elements[i].style.display='block';
     }
-
+    return this;
 }
 mquery.prototype.hide=function(){
     var i=0;
     for(i=0;i<this.elements.length;i++){
         this.elements[i].style.display='none';
     }
+    return this;
 }
 mquery.prototype.eq=function(n){
     return $(this.elements[n]);
+}
+mquery.prototype.find=function(str){
+    var result=[],i=0;
+    for(var i=0;i<this.elements.length;i++){
+    switch (str.charAt(0)){
+        case '.':
+            result=result.concat(getByClass(this.elements[i],str.substring(1)));
+            break;
+        default :
+            var elem=this.elements[i].getElementsByTagName(str);
+            for(var j=0;j<elem.length;j++){
+                result.push(elem[j]);
+            }
+            break;
+     }
+    }
+    var newQuery=$();
+    newQuery.elements=result;
+    return newQuery;
+}
+mquery.prototype.index=function(){
+    var aBorther=this.elements[0].parentNode.children;
+    var i=0;
+    for(i=0;i<aBorther.length;i++){
+        if(aBorther[i]==this.elements[0]){
+            return i;
+        }
+    }
 }
 /*¹¤¾ßº¯Êý*/
 var EventUtil={

@@ -84,10 +84,11 @@ mquery.prototype.click=function(fn){
     }
     return this;
 }
-mquery.prototype.hover=function(fn){
+mquery.prototype.hover=function(overfn,outfn){
     var i=0;
     for(i=0;i<this.elements.length;i++){
-        EventUtil.addHandler(this.elements[i],'mouseover',fn);
+        EventUtil.addHandler(this.elements[i],'mouseover',overfn);
+        EventUtil.addHandler(this.elements[i],'mouseout',outfn);
     }
     return this;
 }
@@ -149,6 +150,15 @@ mquery.prototype.index=function(){
         }
     }
 }
+mquery.prototype.bind=function(sEv,fn){
+    var i=0;
+    for(i=0;i<this.elements.length;i++){
+        EventUtil.addHandler(this.elements[i],sEv,fn);
+    }
+}
+mquery.prototype.extend=function(name,fn){
+    mquery.prototype[name]=fn;
+}
 /*工具函数*/
 var EventUtil={
     /*
@@ -158,10 +168,19 @@ var EventUtil={
      */
     addHandler:function  (element,type,handler) {
         if(element.addEventListener){
-            element.addEventListener(type,handler,false);/*DOM2级事件处理程序*/
+            element.addEventListener(type,function(ev){
+                if(false==handler.call(element)){  //return flase 阻止冒泡和默认事件
+                    ev.cancelBubble=true;
+                    ev.preventDefault();
+                }
+            },false);/*DOM2级事件处理程序*/
         }else if(element.attachEvent){
             element.attachEvent("on"+type,function(){
-                handler.call(element); /*解决IE下this指向window*/
+                /*解决IE下this指向window*/
+                if(false==handler.call(element)){
+                    event.cancelBubble=true;
+                    return false;
+                }
             });/*IE事件处理程序*/
         }else{
             element["on"+type]=handler;/*DOM0级事件处理程序*/

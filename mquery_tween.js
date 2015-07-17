@@ -1,7 +1,30 @@
 /**
  * Created by lulizhou on 2015/7/17.
  */
-$().extend("animation",function(json,times,fx,endFn){
+$().extend("animation",function(){
+    var json,
+        times=1000,//é»˜è®¤è¿åŠ¨æ—¶é—´ä¸º1000ms
+        fx="easeOut",//é»˜è®¤è¿åŠ¨å½¢å¼
+        endFn;
+    for(var type in arguments){
+        switch (typeof arguments[type]) {
+            case "string":
+                fx=arguments[type];
+                break;
+            case 'number':
+                times=arguments[type];
+                break;
+            case 'function':
+                endFn=arguments[type];
+                break;
+            case 'object':
+                json=arguments[type];
+                break;
+            default :
+                console.log("å‚æ•°é”™è¯¯!")
+                break;
+        }
+    }
     var i=0;
     for(i=0;i<this.elements.length;i++){
         doMove(this.elements[i],json,times,fx,endFn);
@@ -13,7 +36,7 @@ function doMove(obj,json,times,fx,endFn){
         obj=obj;
     }
 
-    var iCur={};//´æ·Å³õÊ¼ÖµbµÄ¼¯ºÏ
+    var iCur={};
 
     for(var attr in json){
         iCur[attr]=0;
@@ -25,19 +48,19 @@ function doMove(obj,json,times,fx,endFn){
         }
     }
 
-    var startTime=new Date().getTime();//ÔË¶¯¿ªÊ¼µÄÊ±¼ä<·µ»Ø 1970 Äê 1 ÔÂ 1 ÈÕÖÁ½ñµÄºÁÃëÊı>
+    var startTime=new Date().getTime();
     var t=0;
 
     clearInterval(obj.timer);
     obj.timer=setInterval(function(){
 
-        var nowTime=new Date().getTime();//ÔË¶¯µ±Ç°µÄÊ±¼ä
+        var nowTime=new Date().getTime();
 
         t=nowTime-startTime;
         if(t>times)t=times;
 
         for(var attr in json){
-            var value=Tween[fx](t,iCur[attr],json[attr]-iCur[attr],times);//valueÊÇ¿É±äµÄ£¬¾ÍÊÇÔË¶¯µ½ÁËÄÄÀï£¬µ±Ç°µÄÄ¿±êµã
+            var value=Tween[fx](t,iCur[attr],json[attr]-iCur[attr],times);
             if(attr=='opacity'){
                 obj.style.opacity=value/100;
                 obj.style.filter='alpha(opacity='+value+')';
@@ -54,6 +77,8 @@ function doMove(obj,json,times,fx,endFn){
         }
     },30)
 }
+
+//getStyleå‡½æ•°
 function getStyle(obj,attr){
     if(obj.currentStyle){
         return obj.currentStyle[attr];
@@ -61,35 +86,49 @@ function getStyle(obj,attr){
         return getComputedStyle(obj)[attr];
     }
 }
+
+/*
+ * t : time å·²è¿‡æ—¶é—´
+ * b : begin èµ·å§‹å€¼
+ * c : count æ€»çš„è¿åŠ¨å€¼
+ * d : duration æŒç»­æ—¶é—´
+ *
+ * æ›²çº¿æ–¹ç¨‹
+ *
+ * http://www.cnblogs.com/bluedream2009/archive/2010/06/19/1760909.html
+ * */
+
+//Tween.linear();
+
 var Tween={
-    linear:function(t,b,c,d){//ÔÈËÙ
+    linear:function(t,b,c,d){//åŒ€é€Ÿ
         return c*t/d+b;
     },
-    easeIn:function(t,b,c,d){//¼ÓËÙÇúÏß
+    easeIn:function(t,b,c,d){//åŠ é€Ÿæ›²çº¿
         return c*(t/=d)*t+b;
     },
-    easeOut:function(t,b,c,d){//¼õËÙÇúÏß
+    easeOut:function(t,b,c,d){//å‡é€Ÿæ›²çº¿
         return -c*(t/=d)*(t-2)+b;
     },
-    easeBoth:function(t,b,c,d){//¼ÓËÙ¼õËÙÇúÏß
+    easeBoth:function(t,b,c,d){//åŠ é€Ÿå‡é€Ÿæ›²çº¿
         if((t/=d/2)<1){
             return c/2*t*t+b;
         }
         return -c/2 *((--t)*(t-2)-1)+b;
     },
-    easeInStrong:function(t,b,c,d){//¼Ó¼ÓËÙÇúÏß
+    easeInStrong:function(t,b,c,d){//åŠ åŠ é€Ÿæ›²çº¿
         return c*(t/=d)*t*t*t+b;
     },
-    easeOutStrong:function(t,b,c,d){//¼õ¼õËÙÇúÏß
+    easeOutStrong:function(t,b,c,d){//å‡å‡é€Ÿæ›²çº¿
         return -c *((t=t/d-1)*t*t*t - 1) + b;
     },
-    easeBothStrong:function(t,b,c,d){//¼Ó¼ÓËÙ¼õ¼õËÙÇúÏß
+    easeBothStrong:function(t,b,c,d){//åŠ åŠ é€Ÿå‡å‡é€Ÿæ›²çº¿
         if((t/=d/2)<1){
             return c/2*t*t*t*t+b;
         }
         return -c/2*((t-=2)*t*t*t-2)+b;
     },
-    elasticIn:function(t,b,c,d,a,p){//ÕıÏÒË¥¼õÇúÏß£¨µ¯¶¯½¥Èë£©
+    elasticIn:function(t,b,c,d,a,p){//æ­£å¼¦è¡°å‡æ›²çº¿ï¼ˆå¼¹åŠ¨æ¸å…¥ï¼‰
         if(t===0){
             return b;
         }
@@ -107,7 +146,7 @@ var Tween={
         }
         return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;
     },
-    elasticOut:function(t,b,c,d,a,p){//ÕıÏÒÔöÇ¿ÇúÏß£¨µ¯¶¯½¥³ö£©
+    elasticOut:function(t,b,c,d,a,p){//æ­£å¼¦å¢å¼ºæ›²çº¿ï¼ˆå¼¹åŠ¨æ¸å‡ºï¼‰
         if(t===0){
             return b;
         }
@@ -149,7 +188,7 @@ var Tween={
         return a*Math.pow(2,-10*(t-=1))*
             Math.sin((t*d-s)*(2*Math.PI)/p)*0.5+c+b;
     },
-    backIn:function(t, b, c, d, s){//»ØÍË¼ÓËÙ£¨»ØÍË½¥Èë£©
+    backIn:function(t, b, c, d, s){//å›é€€åŠ é€Ÿï¼ˆå›é€€æ¸å…¥ï¼‰
         if(typeof s=='undefined') {
             s=1.70158;
         }
@@ -157,7 +196,7 @@ var Tween={
     },
     backOut:function(t,b,c,d,s){
         if (typeof s=='undefined'){
-            s=3.70158;//»ØËõµÄ¾àÀë
+            s=3.70158;//å›ç¼©çš„è·ç¦»
         }
         return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;
     },
@@ -170,7 +209,7 @@ var Tween={
         }
         return c/2*((t-=2)*t*(((s*=(1.525))+1)*t+s)+2)+b;
     },
-    bounceIn:function(t,b,c,d){//µ¯Çò¼õÕñ£¨µ¯Çò½¥³ö£©
+    bounceIn:function(t,b,c,d){//å¼¹çƒå‡æŒ¯ï¼ˆå¼¹çƒæ¸å‡ºï¼‰
         return c-Tween['bounceOut'](d-t,0,c,d)+b;
     },
     bounceOut:function(t,b,c,d){

@@ -1,7 +1,7 @@
 /**
  * Created by lulizhou on 2015/7/15.
  */
-/*Ö÷º¯Êı*/
+/*ä¸»å‡½æ•°*/
 function getByClass(oParent, sClass) {
     var aEle=oParent.getElementsByTagName('*');
     var aResult=[];
@@ -42,7 +42,7 @@ function mquery(vArgs){
             break;
     }
 }
-/*·½·¨¼¯ºÏ*/
+/*æ–¹æ³•é›†åˆ*/
 mquery.prototype.attr=function(attr,value){
     if(arguments.length==2){
         var i;
@@ -159,31 +159,31 @@ mquery.prototype.bind=function(sEv,fn){
 mquery.prototype.extend=function(name,fn){
     mquery.prototype[name]=fn;
 }
-/*¹¤¾ßº¯Êı*/
+/*å·¥å…·å‡½æ•°*/
 var EventUtil={
     /*
-     *element ¼Ó/¼õÊÂ¼şµÄÔªËØ
-     *type	ÊÂ¼şÀàĞÍ
-     *handler Ö´ĞĞº¯Êı
+     *element åŠ /å‡äº‹ä»¶çš„å…ƒç´ 
+     *type	äº‹ä»¶ç±»å‹
+     *handler æ‰§è¡Œå‡½æ•°
      */
     addHandler:function  (element,type,handler) {
         if(element.addEventListener){
             element.addEventListener(type,function(ev){
-                if(false==handler.call(element)){  //return flase ×èÖ¹Ã°ÅİºÍÄ¬ÈÏÊÂ¼ş
+                if(false==handler.call(element)){  //return flase é˜»æ­¢å†’æ³¡å’Œé»˜è®¤äº‹ä»¶
                     ev.cancelBubble=true;
                     ev.preventDefault();
                 }
-            },false);/*DOM2¼¶ÊÂ¼ş´¦Àí³ÌĞò*/
+            },false);/*DOM2çº§äº‹ä»¶å¤„ç†ç¨‹åº*/
         }else if(element.attachEvent){
             element.attachEvent("on"+type,function(){
-                /*½â¾öIEÏÂthisÖ¸Ïòwindow*/
+                /*è§£å†³IEä¸‹thisæŒ‡å‘window*/
                 if(false==handler.call(element)){
                     event.cancelBubble=true;
                     return false;
                 }
-            });/*IEÊÂ¼ş´¦Àí³ÌĞò*/
+            });/*IEäº‹ä»¶å¤„ç†ç¨‹åº*/
         }else{
-            element["on"+type]=handler;/*DOM0¼¶ÊÂ¼ş´¦Àí³ÌĞò*/
+            element["on"+type]=handler;/*DOM0çº§äº‹ä»¶å¤„ç†ç¨‹åº*/
         }
     },
     removeHandler:function(element,type,handler){
